@@ -36,6 +36,7 @@
     "@wdio/spec-reporter": "^5.7.2",
     "@wdio/sync": "^5.7.2",
     "chai": "*",
+    "jasmine": "^3.3.1",
     "nock": "^10.0.6",
     "should": "^13.2.3",
     "sinon": "^4.5.0",
