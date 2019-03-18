@@ -1,180 +1,112 @@
-const assert = require('assert');
-const request = require('supertest');
-const app = require('../../app')
-const sinon = require('sinon');
 const chai = require('chai');
+const assert = require('chai').assert;
+const expect = require('chai').expect;
 const should = chai.should();
+const request = require('supertest');
 const nock = require('nock');
-const makeHttpRequest = require('../../lib/api-actions').makeHttpRequest;
+const app = require('../../app')
 const response = require('./response');
-const jasmine = require('jasmine');
 nock.disableNetConnect()
 nock.enableNetConnect('127.0.0.1')
 
-describe('recipe search api', () => {
+describe('recipesearch api', () => {
   beforeEach(() => {
-
+    nock('https://www.food2fork.com')
+      .get('/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=pasta')
+      .reply(200, response);
    });
 
-   it('makes request to food2fork and return result', function(done) {
-     const scope = nock('https://www.food2fork.com')
-       .get('/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=pasta')
-       .reply(200, response)
+   // afterEach(() => {
+   //   require(request(app)).stop()
+   // });
 
-     // nock('https://food2fork.com')
-     //   .get('/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=pasta')
-     //   .reply(200, response);
+   // afterEach(done => request(app).close(done));
 
+
+   it('response should have 200 status code', (done) => {
+     request(app)
+       .get('/documents/recipesearch/pasta')
+       .expect((resp) => {
+         assert(resp.statusCode.should.eql(200));
+       })
+       .expect(200, done);
+   });
+
+   it('value of key "parsed" is an array', (done) => {
+     request(app)
+      .get("/documents/recipesearch/pasta")
+      .expect((resp) => {
+        assert.typeOf(resp.body.parsed, 'array');
+      })
+      .expect(200, done);
+   });
+
+    it('body response is an object', (done) => {
       request(app)
-        .get('/documents/recipesearch/pasta')
-        .expect(function(resp) {
-          assert.equal(resp.body.parsed[0].title, "Jalapeno Popper Grilled Cheese Sandwich");
-        })
-        .expect(200, done);
+       .get('/documents/recipesearch/pasta')
+       .expect((resp) => {
+         assert.typeOf(resp.body, 'object');
+       })
+       .expect(200, done);
     });
+
+   it('each recipe has a "source_url" and a "publisher" properties', (done) => {
+     request(app)
+      .get('/documents/recipesearch/pasta')
+      .expect((resp) => {
+        const recipes = resp.body.parsed
+        recipes.forEach((recipe) => {
+          expect(recipe).to.have.own.property('source_url');
+          expect(recipe).to.have.own.property('publisher');
+        })
+      })
+      .expect(200, done)
+   });
+
+   it('response should contain key called "parsed" with length of 4', (done) => {
+     request(app)
+      .get('/documents/recipesearch/pasta')
+      .expect((resp) => {
+        expect(resp.body).to.have.property('parsed').with.lengthOf(4);
+      })
+      .expect(200, done);
+   });
+
+   describe('makes request to food2fork and return result', () => {
+     it('title of first recipe should corresponde', (done) => {
+        request(app)
+          .get('/documents/recipesearch/pasta')
+          .expect((resp) => {
+            assert.equal(resp.body.parsed[0].title, "Pasta with Pesto Cream Sauce");
+          })
+          .expect(200, done);
+      });
+
+      it('f2f_url of second recipe should corresponde', (done) => {
+        request(app)
+          .get('/documents/recipesearch/pasta')
+          .expect((resp) => {
+            assert.equal(resp.body.parsed[1].f2f_url, "http://food2fork.com/view/8f3e73");
+          })
+          .expect(200, done);
+      });
+
+      it('recipe_id of third recipe should correspond', (done) => {
+        request(app)
+          .get('/documents/recipesearch/pasta')
+          .expect((resp) => {
+            assert.equal(resp.body.parsed[2].recipe_id, "47032");
+          })
+          .expect(200, done);
+      });
+
+      it('social_rank of fourth recipe should correspond', (done) => {
+        request(app)
+          .get('/documents/recipesearch/pasta')
+          .expect((resp) => {
+            assert.equal(resp.body.parsed[3].social_rank, "99.99999999999989");
+          })
+          .expect(200, done);
+      });
+   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// describe('food2fork API', () => {
-//   beforeEach(() => {
-//     nock('https://food2fork.com')
-//       .get('/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=pasta')
-//       .reply(200, response);
-//    });
-//
-//    var httpDetails = {
-//            query: 'pasta',
-//            host: 'www.food2fork.com',
-//            path: '/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q='
-//        }
-//
-//    it('get http request to food2fork api', () => {
-//       return makeHttpRequest(httpDetails, function(returnValue) {
-//         res.json(returnValue);
-//       })
-//         .then(response => {
-//           expect(typeof response).to.equal('object');
-//
-//           expect(response.parsed[0].publisher).to.equal('Closet Cooking')
-//           expect(response.parsed[0].title).to.equal('Jalapeno Popper Grilled Cheese Sandwich')
-//           expect(response.parsed[0].social_rank).to.equal(100)
-//         });
-//     });
-// });
-
-// describe('food2fork api', function () {
-//   it('body should return appropiate value', function(done) {
-//     food2fork.get("/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=pasta")
-//       .reply(200, {
-//         count: 30,
-//         recipes: [
-//           {
-//             publisher: "Closet Cooking",
-//             f2f_url: "http://food2fork.com/view/35382",
-//             title: "Jalapeno Popper Grilled Cheese Sandwich",
-//             source_url: "http://www.closetcooking.com/2011/04/jalapeno-popper-grilled-cheese-sandwich.html",
-//             recipe_id: "35382",
-//             image_url: "http://static.food2fork.com/Jalapeno2BPopper2BGrilled2BCheese2BSandwich2B12B500fd186186.jpg",
-//             social_rank: 100,
-//             publisher_url: "http://closetcooking.com"
-//           }
-//         ]
-//       });
-//
-//     var httpDetails = {
-//         query: 'pasta',
-//         host: 'www.food2fork.com',
-//         path: '/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q='
-//     }
-//
-//     request(makeHttpRequest.makeHttpRequest(httpDetails, ))
-//       .expect(function(resp) {
-//           assert.equal(resp.body.parsed[0].title, "Jalapeno Popper Grilled Cheese Sandwich");
-//     })
-//       .expect(200, done);
-//   });
-// });
-
-// describe('food2fork api', function () {
-//   it('body should return appropiate value', function(done) {
-//     request(app)
-//       .get('/documents/recipesearch/pasta')
-//       .expect(function(resp) {
-//         assert.equal(resp.body.parsed[0].title, "Pasta with Pesto Cream Sauce");
-//       })
-//       .expect(200, done);
-//   });
-// });
-
-// const APImock = nock('food2fork.com')
-//   .get('/api/search?key=c0172c962f73f5feeaddc283613ce9ef&q=')
-//   .reply(200, {
-//     count: 1,
-//     recipes: [
-//         {
-//           publisher: "Closet Cooking",
-//           f2f_url: "http://food2fork.com/view/35382",
-//           title: "Jalapeno Popper Grilled Cheese Sandwich",
-//           source_url: "http://www.closetcooking.com/2011/04/jalapeno-popper-grilled-cheese-sandwich.html",
-//           recipe_id: "35382",
-//           image_url: "http://static.food2fork.com/Jalapeno2BPopper2BGrilled2BCheese2BSandwich2B12B500fd186186.jpg",
-//           social_rank: 100,
-//           publisher_url: "http://closetcooking.com"
-//         }
-//       ]
-//     }
-//   })
-
-// describe('food2fork API', function () {
-//   beforeEach(() => {
-//      app.get = sinon.stub(request, 'get');
-//    });
-//    afterEach(() => {
-//      request.restore();
-//    });
-//
-//   it('should return all the pasta recipes', function(done) {
-//     request(app)
-//        .get('/documents/recipesearch/pasta')
-//        res.statusCode.should.eql(200);
-//   });
-// });
-//
-// describe('food2fork api', function () {
-//   it('body should return appropiate value', function(done) {
-//     request(app)
-//       .get('/documents/recipesearch/pasta')
-//       .expect(function(resp) {
-//         assert.equal(resp.body.recipes[0].title, "Jalapeno Popper Grilled Cheese Sandwich");
-//       })
-//       .expect(200, done);
-//   });
-// });
