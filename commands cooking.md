@@ -11,8 +11,8 @@ mongod --dbpath data
 run tests with wdio:
 npm test
 
-run specific tests with mocha:
+run specific file test with mocha:
 ./node_modules/.bin/mocha test/routes/api-actions-test.js
 
-
-node --expose-internals ./node_modules/.bin/mocha test/routes/api-actions-test.js
+run specific file test with mocha and then exit:
+./node_modules/.bin/mocha --exit test/routes/api-actions-test.js

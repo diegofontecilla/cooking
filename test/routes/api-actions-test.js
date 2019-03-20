@@ -16,13 +16,6 @@ describe('recipesearch api', () => {
       .reply(200, response);
    });
 
-   // afterEach(() => {
-   //   require(request(app)).stop()
-   // });
-
-   // afterEach(done => request(app).close(done));
-
-
    it('response should have 200 status code', (done) => {
      request(app)
        .get('/documents/recipesearch/pasta')
