@@ -7,23 +7,24 @@ function search(event) {
 
 function populateSearchResults (query) {
     var tableContent;
-
+    console.log(query)
     $.getJSON(query, function(data) {
+        console.log(data)
         $.each(formatCheck(data), function() {
             tableContent += '<tr>';
             if (this.recipeName) {
                 var href = this.recipeName.replace(/ /g,"_");
-                tableContent += '<td><a href="/recipe/' + href + 
+                tableContent += '<td><a href="/recipe/' + href +
                 '" class="linkshowrecipedetails list-group-item" rel="something">' + this.recipeName + '</a></td>';
             } else {
-                tableContent += '<td><a href="' + this.source_url + 
+                tableContent += '<td><a href="' + this.source_url +
                 '" class="linkshowrecipedetails list-group-item" rel="' + this.title + '">' +
                  this.title + '</a></td>';
             }
             tableContent += '</tr>';
         });
-    
-    $('.searchList table tbody').append(tableContent); 
+
+    $('.searchList table tbody').append(tableContent);
     });
 };
 

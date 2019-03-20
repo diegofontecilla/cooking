@@ -10,18 +10,18 @@ describe('cookbook web site', () => {
   });
 
   describe('search for a recipe', () => {
-    it('should display recipes with lamb if there are some', () => {
-      // How do I test that?
-      browser.url('/');
-      const input = $('#inputSearchQuery');
-      input.setValue('lamb');
-      const button = $('button[href="#results"]');
-      button.click();
-
-      var textWithLambWord = browser.getText("//*[contains(text(),'lamb')]")
-
-      assert.equal(true, textWithLambWord);
-    });
+    // it('should display recipes with lamb if there are some', () => {
+    //   // How do I test that?
+    //   browser.url('/');
+    //   const input = $('#inputSearchQuery');
+    //   input.setValue('lamb');
+    //   const button = $('button[href="#results"]');
+    //   button.click();
+    //
+    //   var textWithLambWord = browser.getText("//*[contains(text(),'lamb')]")
+    //
+    //   assert.equal(true, textWithLambWord);
+    // });
 
     it('should display message saying there arent any recipies with this ingrediente', () => {
       browser.url('/');
@@ -74,7 +74,7 @@ describe('cookbook web site', () => {
       addRecipeButton.click();
 
       // Test there is a new row on table, and recipe name should correspond with given recipe name.
-      browser.debug();
+      // browser.debug();
 
     });
   })
