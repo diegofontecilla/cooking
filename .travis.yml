@@ -1,9 +1,10 @@
 before_script:
   - npm install
+install:
+  - travis_retry npm install
 language: node_js
 services:
   - mongodb
 env:
   - PORT=3000
-node_js:
-  - "11.10.0"
+node_js: [11, 10, 9, 8, 7, 6, 5, 4]
