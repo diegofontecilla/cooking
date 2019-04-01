@@ -1,9 +1,8 @@
 const chai = require('chai');
-const expect = require('chai').expect;
 const assert = require('chai').assert;
+const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../../app')
-const mongoose = require('mongoose');
 
 describe('GET/documentlist api', () => {
   it('document list is empty', (done) => {
