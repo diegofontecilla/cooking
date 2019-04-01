@@ -28,13 +28,18 @@ describe('GET/documentlist api', () => {
     it('adding a new recipe in the database', (done) => {
       request(app)
         .post('/documents/adddocument')
-        .send([{title: 'Pizza Toscana'}, {title: 'Pizza Tre Formaggi'}])
+        .send([{
+          recipeName: 'Pizza Toscana',
+          cookingTime: '45m',
+          ingredients: 'pizza stuff',
+          method: 'oven'
+        }])
         .expect((resp) => {
           const body = resp.body;
 
           expect(body[0]).to.contain.property('_id')
-          assert.equal(body[0].title, 'Pizza Toscana')
-          assert.equal(body[1].title, 'Pizza Tre Formaggi')
+          assert.equal(body[0].recipeName, 'Pizza Toscana')
+          assert.equal(body[0].method, 'oven')
       })
       .expect(200, done);
     });
