@@ -25,7 +25,7 @@ Output: user sees word 'recipe'
 ## /recipeStore
 ```
 TEST 1
-As a user I can go back to search
+As a user I can go back to search page
 User press 'back to search' button
 Expected output: be redirected to homepage
 Output: successfully redirected to homepage
@@ -38,7 +38,7 @@ User fill in 'recipe name' text box
 User fill in 'cooking time' text box
 User fill in 'ingredients' text box
 User fill in 'method' text box
-Expected output: on the bottom of the page see recipe recently added
+Expected output: on the bottom of the page should be displayed recipe recently added
 Output: no changes on page. The response code is 200.
 COMMENTS: There isn't post(/recipestore) on index.js.
 ```
