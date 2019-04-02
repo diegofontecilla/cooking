@@ -46,14 +46,12 @@ describe('POST/adddocument', () => {
     .expect(200, done);
   });
 
-
-// HAVE A LOOK TO THIS TEST AND MAKE SURE IS CORRECT.
   it('should delete a recipe', (done) => {
     request(app)
       .post('/documents/adddocument')
       .send({
         recipeName: 'Nidi di agretti',
-        cookingTime: '12 mins',
+        cookingTime: '13 mins',
         ingredients: 'good stuff',
         method: 'forno'
       })
@@ -67,7 +65,6 @@ describe('POST/adddocument', () => {
           });
       })
   });
-
 
   it('add recipe and find it by id', (done) => {
     request(app)
